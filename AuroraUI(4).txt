@@ -1,0 +1,2249 @@
+--[[
+    ╔══════════════════════════════════════════════════════════════════════════════╗
+    ║                                                                              ║
+    ║   █████╗ ██╗   ██╗██████╗  ██████╗ ██████╗  █████╗ ██╗   ██╗██╗   ██╗        ║
+    ║  ██╔══██╗██║   ██║██╔══██╗██╔═══██╗██╔══██╗██╔══██╗██║   ██║██║   ██║        ║
+    ║  ███████║██║   ██║██████╔╝██║   ██║██████╔╝███████║██║   ██║██║   ██║        ║
+    ║  ██╔══██║██║   ██║██╔══██╗██║   ██║██╔══██╗██╔══██║██║   ██║██║   ██║        ║
+    ║  ██║  ██║╚██████╔╝██║  ██║╚██████╔╝██║  ██║██║  ██║╚██████╔╝╚██████╔╝        ║
+    ║  ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝  ╚═════╝         ║
+    ║                                                                              ║
+    ║   Premium Roblox UI Library - Version 1.0.0                                 ║
+    ║   Inspired by WindUI & Fluent UI                                            ║
+    ║   Features: Acrylic, Animations, Themes, Components                         ║
+    ║                                                                              ║
+    ╚══════════════════════════════════════════════════════════════════════════════╝
+--]]
+
+--!strict
+local AuroraUI = {}
+AuroraUI.__index = AuroraUI
+
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+-- SERVICES
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local HttpService = game:GetService("HttpService")
+local CoreGui = game:GetService("CoreGui")
+
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+-- THEME SYSTEM
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+local Theme = {}
+Theme.__index = Theme
+
+Theme.Presets = {
+    Dark = {
+        Name = "Dark",
+        Background = Color3.fromRGB(25, 25, 30),
+        BackgroundSecondary = Color3.fromRGB(35, 35, 42),
+        BackgroundTertiary = Color3.fromRGB(45, 45, 54),
+        Surface = Color3.fromRGB(55, 55, 66),
+        SurfaceHover = Color3.fromRGB(65, 65, 78),
+        Primary = Color3.fromRGB(99, 102, 241),
+        PrimaryHover = Color3.fromRGB(129, 140, 248),
+        PrimaryLight = Color3.fromRGB(165, 180, 252),
+        Success = Color3.fromRGB(34, 197, 94),
+        Warning = Color3.fromRGB(251, 191, 36),
+        Error = Color3.fromRGB(239, 68, 68),
+        Info = Color3.fromRGB(59, 130, 246),
+        TextPrimary = Color3.fromRGB(255, 255, 255),
+        TextSecondary = Color3.fromRGB(156, 163, 175),
+        TextTertiary = Color3.fromRGB(107, 114, 128),
+        TextDisabled = Color3.fromRGB(75, 85, 99),
+        Border = Color3.fromRGB(75, 85, 99),
+        BorderHover = Color3.fromRGB(107, 114, 128),
+        BorderActive = Color3.fromRGB(99, 102, 241),
+        Acrylic = { Background = Color3.fromRGB(25, 25, 30), NoiseOpacity = 0.03, BlurIntensity = 0.05 },
+        Shadow = Color3.fromRGB(0, 0, 0),
+        Glow = Color3.fromRGB(99, 102, 241),
+    },
+    Light = {
+        Name = "Light",
+        Background = Color3.fromRGB(255, 255, 255),
+        BackgroundSecondary = Color3.fromRGB(248, 250, 252),
+        BackgroundTertiary = Color3.fromRGB(241, 245, 249),
+        Surface = Color3.fromRGB(226, 232, 240),
+        SurfaceHover = Color3.fromRGB(203, 213, 225),
+        Primary = Color3.fromRGB(79, 70, 229),
+        PrimaryHover = Color3.fromRGB(99, 102, 241),
+        PrimaryLight = Color3.fromRGB(129, 140, 248),
+        Success = Color3.fromRGB(22, 163, 74),
+        Warning = Color3.fromRGB(217, 119, 6),
+        Error = Color3.fromRGB(220, 38, 38),
+        Info = Color3.fromRGB(37, 99, 235),
+        TextPrimary = Color3.fromRGB(15, 23, 42),
+        TextSecondary = Color3.fromRGB(71, 85, 105),
+        TextTertiary = Color3.fromRGB(100, 116, 139),
+        TextDisabled = Color3.fromRGB(148, 163, 184),
+        Border = Color3.fromRGB(203, 213, 225),
+        BorderHover = Color3.fromRGB(148, 163, 184),
+        BorderActive = Color3.fromRGB(79, 70, 229),
+        Acrylic = { Background = Color3.fromRGB(255, 255, 255), NoiseOpacity = 0.02, BlurIntensity = 0.03 },
+        Shadow = Color3.fromRGB(0, 0, 0),
+        Glow = Color3.fromRGB(79, 70, 229),
+    },
+    Midnight = {
+        Name = "Midnight",
+        Background = Color3.fromRGB(15, 23, 42),
+        BackgroundSecondary = Color3.fromRGB(30, 41, 59),
+        BackgroundTertiary = Color3.fromRGB(51, 65, 85),
+        Surface = Color3.fromRGB(71, 85, 105),
+        SurfaceHover = Color3.fromRGB(100, 116, 139),
+        Primary = Color3.fromRGB(56, 189, 248),
+        PrimaryHover = Color3.fromRGB(125, 211, 252),
+        PrimaryLight = Color3.fromRGB(186, 230, 253),
+        Success = Color3.fromRGB(52, 211, 153),
+        Warning = Color3.fromRGB(251, 191, 36),
+        Error = Color3.fromRGB(248, 113, 113),
+        Info = Color3.fromRGB(96, 165, 250),
+        TextPrimary = Color3.fromRGB(248, 250, 252),
+        TextSecondary = Color3.fromRGB(203, 213, 225),
+        TextTertiary = Color3.fromRGB(148, 163, 184),
+        TextDisabled = Color3.fromRGB(100, 116, 139),
+        Border = Color3.fromRGB(71, 85, 105),
+        BorderHover = Color3.fromRGB(100, 116, 139),
+        BorderActive = Color3.fromRGB(56, 189, 248),
+        Acrylic = { Background = Color3.fromRGB(15, 23, 42), NoiseOpacity = 0.04, BlurIntensity = 0.06 },
+        Shadow = Color3.fromRGB(0, 0, 0),
+        Glow = Color3.fromRGB(56, 189, 248),
+    },
+    Aurora = {
+        Name = "Aurora",
+        Background = Color3.fromRGB(20, 20, 28),
+        BackgroundSecondary = Color3.fromRGB(30, 30, 42),
+        BackgroundTertiary = Color3.fromRGB(42, 42, 58),
+        Surface = Color3.fromRGB(55, 55, 75),
+        SurfaceHover = Color3.fromRGB(70, 70, 95),
+        Primary = Color3.fromRGB(236, 72, 153),
+        PrimaryHover = Color3.fromRGB(244, 114, 182),
+        PrimaryLight = Color3.fromRGB(251, 207, 232),
+        Success = Color3.fromRGB(52, 211, 153),
+        Warning = Color3.fromRGB(250, 204, 21),
+        Error = Color3.fromRGB(239, 68, 68),
+        Info = Color3.fromRGB(96, 165, 250),
+        TextPrimary = Color3.fromRGB(255, 255, 255),
+        TextSecondary = Color3.fromRGB(209, 213, 219),
+        TextTertiary = Color3.fromRGB(156, 163, 175),
+        TextDisabled = Color3.fromRGB(107, 114, 128),
+        Border = Color3.fromRGB(75, 85, 99),
+        BorderHover = Color3.fromRGB(107, 114, 128),
+        BorderActive = Color3.fromRGB(236, 72, 153),
+        Acrylic = { Background = Color3.fromRGB(20, 20, 28), NoiseOpacity = 0.035, BlurIntensity = 0.05 },
+        Shadow = Color3.fromRGB(0, 0, 0),
+        Glow = Color3.fromRGB(236, 72, 153),
+    },
+    Emerald = {
+        Name = "Emerald",
+        Background = Color3.fromRGB(6, 78, 59),
+        BackgroundSecondary = Color3.fromRGB(5, 150, 105),
+        BackgroundTertiary = Color3.fromRGB(16, 185, 129),
+        Surface = Color3.fromRGB(52, 211, 153),
+        SurfaceHover = Color3.fromRGB(110, 231, 183),
+        Primary = Color3.fromRGB(167, 243, 208),
+        PrimaryHover = Color3.fromRGB(209, 250, 229),
+        PrimaryLight = Color3.fromRGB(236, 253, 245),
+        Success = Color3.fromRGB(34, 197, 94),
+        Warning = Color3.fromRGB(251, 191, 36),
+        Error = Color3.fromRGB(239, 68, 68),
+        Info = Color3.fromRGB(59, 130, 246),
+        TextPrimary = Color3.fromRGB(255, 255, 255),
+        TextSecondary = Color3.fromRGB(209, 250, 229),
+        TextTertiary = Color3.fromRGB(167, 243, 208),
+        TextDisabled = Color3.fromRGB(110, 231, 183),
+        Border = Color3.fromRGB(16, 185, 129),
+        BorderHover = Color3.fromRGB(52, 211, 153),
+        BorderActive = Color3.fromRGB(167, 243, 208),
+        Acrylic = { Background = Color3.fromRGB(6, 78, 59), NoiseOpacity = 0.03, BlurIntensity = 0.05 },
+        Shadow = Color3.fromRGB(0, 0, 0),
+        Glow = Color3.fromRGB(167, 243, 208),
+    },
+    Rose = {
+        Name = "Rose",
+        Background = Color3.fromRGB(136, 19, 55),
+        BackgroundSecondary = Color3.fromRGB(190, 18, 60),
+        BackgroundTertiary = Color3.fromRGB(225, 29, 72),
+        Surface = Color3.fromRGB(244, 63, 94),
+        SurfaceHover = Color3.fromRGB(251, 113, 133),
+        Primary = Color3.fromRGB(255, 228, 230),
+        PrimaryHover = Color3.fromRGB(255, 241, 242),
+        PrimaryLight = Color3.fromRGB(255, 255, 255),
+        Success = Color3.fromRGB(34, 197, 94),
+        Warning = Color3.fromRGB(251, 191, 36),
+        Error = Color3.fromRGB(239, 68, 68),
+        Info = Color3.fromRGB(59, 130, 246),
+        TextPrimary = Color3.fromRGB(255, 255, 255),
+        TextSecondary = Color3.fromRGB(255, 228, 230),
+        TextTertiary = Color3.fromRGB(254, 205, 211),
+        TextDisabled = Color3.fromRGB(251, 113, 133),
+        Border = Color3.fromRGB(225, 29, 72),
+        BorderHover = Color3.fromRGB(244, 63, 94),
+        BorderActive = Color3.fromRGB(255, 228, 230),
+        Acrylic = { Background = Color3.fromRGB(136, 19, 55), NoiseOpacity = 0.03, BlurIntensity = 0.05 },
+        Shadow = Color3.fromRGB(0, 0, 0),
+        Glow = Color3.fromRGB(255, 228, 230),
+    },
+    Ocean = {
+        Name = "Ocean",
+        Background = Color3.fromRGB(12, 20, 69),
+        BackgroundSecondary = Color3.fromRGB(26, 46, 125),
+        BackgroundTertiary = Color3.fromRGB(37, 99, 235),
+        Surface = Color3.fromRGB(59, 130, 246),
+        SurfaceHover = Color3.fromRGB(96, 165, 250),
+        Primary = Color3.fromRGB(191, 219, 254),
+        PrimaryHover = Color3.fromRGB(219, 234, 254),
+        PrimaryLight = Color3.fromRGB(239, 246, 255),
+        Success = Color3.fromRGB(52, 211, 153),
+        Warning = Color3.fromRGB(251, 191, 36),
+        Error = Color3.fromRGB(239, 68, 68),
+        Info = Color3.fromRGB(147, 197, 253),
+        TextPrimary = Color3.fromRGB(255, 255, 255),
+        TextSecondary = Color3.fromRGB(219, 234, 254),
+        TextTertiary = Color3.fromRGB(191, 219, 254),
+        TextDisabled = Color3.fromRGB(147, 197, 253),
+        Border = Color3.fromRGB(37, 99, 235),
+        BorderHover = Color3.fromRGB(59, 130, 246),
+        BorderActive = Color3.fromRGB(191, 219, 254),
+        Acrylic = { Background = Color3.fromRGB(12, 20, 69), NoiseOpacity = 0.035, BlurIntensity = 0.06 },
+        Shadow = Color3.fromRGB(0, 0, 0),
+        Glow = Color3.fromRGB(191, 219, 254),
+    },
+    Amethyst = {
+        Name = "Amethyst",
+        Background = Color3.fromRGB(46, 16, 101),
+        BackgroundSecondary = Color3.fromRGB(88, 28, 135),
+        BackgroundTertiary = Color3.fromRGB(126, 34, 206),
+        Surface = Color3.fromRGB(147, 51, 234),
+        SurfaceHover = Color3.fromRGB(168, 85, 247),
+        Primary = Color3.fromRGB(233, 213, 255),
+        PrimaryHover = Color3.fromRGB(243, 232, 255),
+        PrimaryLight = Color3.fromRGB(250, 245, 255),
+        Success = Color3.fromRGB(52, 211, 153),
+        Warning = Color3.fromRGB(251, 191, 36),
+        Error = Color3.fromRGB(239, 68, 68),
+        Info = Color3.fromRGB(167, 139, 250),
+        TextPrimary = Color3.fromRGB(255, 255, 255),
+        TextSecondary = Color3.fromRGB(243, 232, 255),
+        TextTertiary = Color3.fromRGB(233, 213, 255),
+        TextDisabled = Color3.fromRGB(192, 132, 252),
+        Border = Color3.fromRGB(126, 34, 206),
+        BorderHover = Color3.fromRGB(147, 51, 234),
+        BorderActive = Color3.fromRGB(233, 213, 255),
+        Acrylic = { Background = Color3.fromRGB(46, 16, 101), NoiseOpacity = 0.035, BlurIntensity = 0.06 },
+        Shadow = Color3.fromRGB(0, 0, 0),
+        Glow = Color3.fromRGB(233, 213, 255),
+    },
+}
+
+function Theme.new(presetName: string)
+    local self = setmetatable({}, Theme)
+    self.Colors = Theme.Presets[presetName] or Theme.Presets.Dark
+    self.OnChanged = Instance.new("BindableEvent")
+    return self
+end
+
+function Theme:Get(colorName: string): Color3
+    return self.Colors[colorName] or self.Colors.TextPrimary
+end
+
+function Theme:GetAcrylic()
+    return self.Colors.Acrylic or Theme.Presets.Dark.Acrylic
+end
+
+function Theme:Set(colorName: string, colorValue: Color3)
+    self.Colors[colorName] = colorValue
+    self.OnChanged:Fire(colorName, colorValue)
+end
+
+function Theme:Switch(presetName: string)
+    if Theme.Presets[presetName] then
+        self.Colors = Theme.Presets[presetName]
+        self.OnChanged:Fire("ThemeChanged", self.Colors)
+    end
+end
+
+function Theme:GetName(): string
+    return self.Colors.Name or "Custom"
+end
+
+function Theme.Lerp(colorA: Color3, colorB: Color3, t: number): Color3
+    return Color3.new(
+        colorA.R + (colorB.R - colorA.R) * t,
+        colorA.G + (colorB.G - colorA.G) * t,
+        colorA.B + (colorB.B - colorA.B) * t
+    )
+end
+
+function Theme.Lighten(color: Color3, amount: number): Color3
+    local h, s, v = Color3.toHSV(color)
+    return Color3.fromHSV(h, s, math.min(1, v + amount))
+end
+
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+-- TWEEN UTILITY
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+local Tween = {}
+Tween.Presets = {
+    Fast = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+    Normal = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+    Smooth = TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+    Bounce = TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+    Elastic = TweenInfo.new(0.6, Enum.EasingStyle.Elastic, Enum.EasingDirection.Out),
+    FadeIn = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+    FadeOut = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+    ScaleIn = TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+    SlideIn = TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+    SlideOut = TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
+}
+Tween.ActiveTweens = {}
+
+function Tween.Create(object: Instance, tweenInfo: any, properties: {[string]: any}, callback: (() -> ())?)
+    if not object or not object.Parent then return nil end
+    
+    if type(tweenInfo) == "string" then
+        tweenInfo = Tween.Presets[tweenInfo] or Tween.Presets.Normal
+    end
+    
+    local tweenKey = tostring(object)
+    if Tween.ActiveTweens[tweenKey] then
+        for _, activeTween in ipairs(Tween.ActiveTweens[tweenKey]) do
+            if activeTween then activeTween:Cancel() end
+        end
+    end
+    
+    local newTween = TweenService:Create(object, tweenInfo, properties)
+    Tween.ActiveTweens[tweenKey] = Tween.ActiveTweens[tweenKey] or {}
+    table.insert(Tween.ActiveTweens[tweenKey], newTween)
+    
+    local connection
+    connection = newTween.Completed:Connect(function(status)
+        if Tween.ActiveTweens[tweenKey] then
+            for i, t in ipairs(Tween.ActiveTweens[tweenKey]) do
+                if t == newTween then
+                    table.remove(Tween.ActiveTweens[tweenKey], i)
+                    break
+                end
+            end
+        end
+        if connection then connection:Disconnect() end
+        if callback then callback() end
+    end)
+    
+    newTween:Play()
+    return newTween
+end
+
+function Tween.FadeIn(object: GuiObject, duration: number?, callback: (() -> ())?)
+    if not object then return end
+    local tweenInfo = duration and TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) or Tween.Presets.FadeIn
+    object.Visible = true
+    return Tween.Create(object, tweenInfo, {BackgroundTransparency = 0, TextTransparency = 0, ImageTransparency = 0}, callback)
+end
+
+function Tween.FadeOut(object: GuiObject, duration: number?, callback: (() -> ())?)
+    if not object then return end
+    local tweenInfo = duration and TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.In) or Tween.Presets.FadeOut
+    return Tween.Create(object, tweenInfo, {BackgroundTransparency = 1, TextTransparency = 1, ImageTransparency = 1}, function()
+        object.Visible = false
+        if callback then callback() end
+    end)
+end
+
+function Tween.Shake(object: GuiObject, intensity: number?, duration: number?)
+    if not object then return end
+    intensity = intensity or 10
+    duration = duration or 0.5
+    local originalPosition = object.Position
+    local startTime = tick()
+    
+    local connection
+    connection = RunService.Heartbeat:Connect(function()
+        local elapsed = tick() - startTime
+        if elapsed >= duration then
+            object.Position = originalPosition
+            connection:Disconnect()
+            return
+        end
+        local decay = 1 - (elapsed / duration)
+        local offsetX = (math.random() - 0.5) * intensity * decay
+        local offsetY = (math.random() - 0.5) * intensity * decay
+        object.Position = UDim2.new(originalPosition.X.Scale, originalPosition.X.Offset + offsetX,
+            originalPosition.Y.Scale, originalPosition.Y.Offset + offsetY)
+    end)
+end
+
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+-- INPUT HANDLING
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+local Input = {}
+
+function Input.MakeDraggable(object: GuiObject, handle: GuiObject?, onDragStart: (() -> ())?, onDragEnd: (() -> ())?)
+    if not object then return end
+    handle = handle or object
+    local connections = {}
+    local dragStart, startPos, isDragging = nil, nil, false
+    local dragThreshold = 3
+    
+    local inputBegan = handle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragStart = input.Position
+            startPos = object.Position
+            isDragging = false
+            
+            local moveConnection, endConnection
+            
+            moveConnection = UserInputService.InputChanged:Connect(function(moveInput)
+                if moveInput.UserInputType == Enum.UserInputType.MouseMovement or moveInput.UserInputType == Enum.UserInputType.Touch then
+                    local delta = moveInput.Position - dragStart
+                    if not isDragging and (math.abs(delta.X) > dragThreshold or math.abs(delta.Y) > dragThreshold) then
+                        isDragging = true
+                        if onDragStart then onDragStart() end
+                    end
+                    if isDragging then
+                        object.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+                            startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+                    end
+                end
+            end)
+            
+            endConnection = UserInputService.InputEnded:Connect(function(endInput)
+                if endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch then
+                    if moveConnection then moveConnection:Disconnect() end
+                    if endConnection then endConnection:Disconnect() end
+                    if isDragging and onDragEnd then onDragEnd() end
+                    isDragging = false
+                    dragStart = nil
+                end
+            end)
+        end
+    end)
+    
+    return {inputBegan}
+end
+
+function Input.MakeResizable(object: GuiObject, handle: GuiObject, minSize: Vector2?, maxSize: Vector2?)
+    if not object or not handle then return end
+    minSize = minSize or Vector2.new(200, 100)
+    maxSize = maxSize or Vector2.new(800, 600)
+    
+    local resizeStart, startSize
+    
+    handle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            resizeStart = input.Position
+            startSize = Vector2.new(object.AbsoluteSize.X, object.AbsoluteSize.Y)
+            
+            local moveConnection, endConnection
+            
+            moveConnection = UserInputService.InputChanged:Connect(function(moveInput)
+                if moveInput.UserInputType == Enum.UserInputType.MouseMovement or moveInput.UserInputType == Enum.UserInputType.Touch then
+                    local delta = moveInput.Position - resizeStart
+                    local newWidth = math.clamp(startSize.X + delta.X, minSize.X, maxSize.X)
+                    local newHeight = math.clamp(startSize.Y + delta.Y, minSize.Y, maxSize.Y)
+                    object.Size = UDim2.new(0, newWidth, 0, newHeight)
+                end
+            end)
+            
+            endConnection = UserInputService.InputEnded:Connect(function(endInput)
+                if endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch then
+                    if moveConnection then moveConnection:Disconnect() end
+                    if endConnection then endConnection:Disconnect() end
+                end
+            end)
+        end
+    end)
+end
+
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+-- WINDOW COMPONENT
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+local Window = {}
+Window.__index = Window
+
+function Window.new(config: {[string]: any})
+    local self = setmetatable({}, Window)
+    
+    config = config or {}
+    self.Title = config.Title or "AuroraUI Window"
+    self.Size = config.Size or UDim2.new(0, 600, 0, 400)
+    self.Position = config.Position or UDim2.new(0.5, -300, 0.5, -200)
+    self.MinSize = config.MinSize or Vector2.new(400, 250)
+    self.MaxSize = config.MaxSize or Vector2.new(1200, 800)
+    self.Theme = config.Theme or Theme.new("Dark")
+    self.AcrylicEnabled = config.AcrylicEnabled ~= false
+    self.Resizable = config.Resizable ~= false
+    self.Draggable = config.Draggable ~= false
+    self.Closable = config.Closable ~= false
+    self.Minimizable = config.Minimizable ~= false
+    self.Parent = config.Parent
+    
+    self.IsMinimized = false
+    self.IsMaximized = false
+    self.IsClosed = false
+    
+    self.OnClose = Instance.new("BindableEvent")
+    self.OnMinimize = Instance.new("BindableEvent")
+    self.OnFocus = Instance.new("BindableEvent")
+    
+    self:CreateWindow()
+    self:ApplyTheme()
+    self:SetupInteractions()
+    
+    return self
+end
+
+function Window:CreateWindow()
+    self.MainFrame = Instance.new("Frame")
+    self.MainFrame.Name = "Window"
+    self.MainFrame.Size = self.Size
+    self.MainFrame.Position = self.Position
+    self.MainFrame.BackgroundColor3 = self.Theme:Get("Background")
+    self.MainFrame.BorderSizePixel = 0
+    self.MainFrame.ClipsDescendants = true
+    self.MainFrame.Parent = self.Parent
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = self.MainFrame
+    
+    local shadow = Instance.new("ImageLabel")
+    shadow.Name = "Shadow"
+    shadow.Size = UDim2.new(1, 40, 1, 40)
+    shadow.Position = UDim2.new(0, -20, 0, -20)
+    shadow.BackgroundTransparency = 1
+    shadow.Image = "rbxassetid://5554236805"
+    shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+    shadow.ImageTransparency = 0.6
+    shadow.ScaleType = Enum.ScaleType.Slice
+    shadow.SliceCenter = Rect.new(23, 23, 277, 277)
+    shadow.ZIndex = -1
+    shadow.Parent = self.MainFrame
+    
+    -- Title Bar
+    self.TitleBar = Instance.new("Frame")
+    self.TitleBar.Name = "TitleBar"
+    self.TitleBar.Size = UDim2.new(1, 0, 0, 40)
+    self.TitleBar.BackgroundColor3 = self.Theme:Get("BackgroundSecondary")
+    self.TitleBar.BackgroundTransparency = 0.5
+    self.TitleBar.BorderSizePixel = 0
+    self.TitleBar.Parent = self.MainFrame
+    
+    local titleCorner = Instance.new("UICorner")
+    titleCorner.CornerRadius = UDim.new(0, 8)
+    titleCorner.Parent = self.TitleBar
+    
+    local bottomFix = Instance.new("Frame")
+    bottomFix.Name = "BottomFix"
+    bottomFix.Size = UDim2.new(1, 0, 0, 10)
+    bottomFix.Position = UDim2.new(0, 0, 1, -10)
+    bottomFix.BackgroundColor3 = self.Theme:Get("BackgroundSecondary")
+    bottomFix.BorderSizePixel = 0
+    bottomFix.Parent = self.TitleBar
+    
+    self.TitleLabel = Instance.new("TextLabel")
+    self.TitleLabel.Name = "Title"
+    self.TitleLabel.Size = UDim2.new(1, -120, 1, 0)
+    self.TitleLabel.Position = UDim2.new(0, 15, 0, 0)
+    self.TitleLabel.BackgroundTransparency = 1
+    self.TitleLabel.Text = self.Title
+    self.TitleLabel.TextSize = 14
+    self.TitleLabel.Font = Enum.Font.GothamSemibold
+    self.TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    self.TitleLabel.Parent = self.TitleBar
+    
+    -- Window Controls
+    local controlsFrame = Instance.new("Frame")
+    controlsFrame.Name = "Controls"
+    controlsFrame.Size = UDim2.new(0, 80, 1, 0)
+    controlsFrame.Position = UDim2.new(1, -85, 0, 0)
+    controlsFrame.BackgroundTransparency = 1
+    controlsFrame.Parent = self.TitleBar
+    
+    local function createControlButton(name: string, position: UDim2, color: Color3, callback: () -> ())
+        local button = Instance.new("TextButton")
+        button.Name = name .. "Button"
+        button.Size = UDim2.new(0, 12, 0, 12)
+        button.Position = position
+        button.BackgroundColor3 = color
+        button.Text = ""
+        button.AutoButtonColor = false
+        button.Parent = controlsFrame
+        
+        local btnCorner = Instance.new("UICorner")
+        btnCorner.CornerRadius = UDim.new(1, 0)
+        btnCorner.Parent = button
+        
+        button.MouseEnter:Connect(function()
+            Tween.Create(button, "Fast", {BackgroundTransparency = 0.3})
+        end)
+        button.MouseLeave:Connect(function()
+            Tween.Create(button, "Fast", {BackgroundTransparency = 0})
+        end)
+        button.MouseButton1Click:Connect(callback)
+        return button
+    end
+    
+    if self.Minimizable then
+        createControlButton("Minimize", UDim2.new(0, 0, 0.5, -6), Color3.fromRGB(251, 191, 36), function() self:Minimize() end)
+    end
+    
+    createControlButton("Maximize", UDim2.new(0, 20, 0.5, -6), Color3.fromRGB(52, 211, 153), function() self:Maximize() end)
+    
+    if self.Closable then
+        createControlButton("Close", UDim2.new(0, 40, 0.5, -6), Color3.fromRGB(239, 68, 68), function() self:Close() end)
+    end
+    
+    -- Content
+    self.Content = Instance.new("Frame")
+    self.Content.Name = "Content"
+    self.Content.Size = UDim2.new(1, 0, 1, -40)
+    self.Content.Position = UDim2.new(0, 0, 0, 40)
+    self.Content.BackgroundTransparency = 1
+    self.Content.Parent = self.MainFrame
+    
+    -- Resize Handle
+    if self.Resizable then
+        self.ResizeHandle = Instance.new("TextButton")
+        self.ResizeHandle.Name = "ResizeHandle"
+        self.ResizeHandle.Size = UDim2.new(0, 20, 0, 20)
+        self.ResizeHandle.Position = UDim2.new(1, -20, 1, -20)
+        self.ResizeHandle.BackgroundTransparency = 1
+        self.ResizeHandle.Text = ""
+        self.ResizeHandle.AutoButtonColor = false
+        self.ResizeHandle.Parent = self.MainFrame
+        
+        local resizeIcon = Instance.new("ImageLabel")
+        resizeIcon.Size = UDim2.new(0, 12, 0, 12)
+        resizeIcon.Position = UDim2.new(1, -14, 1, -14)
+        resizeIcon.BackgroundTransparency = 1
+        resizeIcon.Image = "rbxassetid://3926307971"
+        resizeIcon.ImageRectOffset = Vector2.new(404, 84)
+        resizeIcon.ImageRectSize = Vector2.new(36, 36)
+        resizeIcon.ImageColor3 = self.Theme:Get("TextTertiary")
+        resizeIcon.Parent = self.ResizeHandle
+    end
+end
+
+function Window:ApplyTheme()
+    self.MainFrame.BackgroundColor3 = self.Theme:Get("Background")
+    self.TitleBar.BackgroundColor3 = self.Theme:Get("BackgroundSecondary")
+    self.TitleBar.BottomFix.BackgroundColor3 = self.Theme:Get("BackgroundSecondary")
+    self.TitleLabel.TextColor3 = self.Theme:Get("TextPrimary")
+end
+
+function Window:SetupInteractions()
+    if self.Draggable then
+        Input.MakeDraggable(self.MainFrame, self.TitleBar, 
+            function() self:Focus() end)
+    end
+    
+    if self.Resizable and self.ResizeHandle then
+        Input.MakeResizable(self.MainFrame, self.ResizeHandle, self.MinSize, self.MaxSize)
+    end
+    
+    self.MainFrame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            self:Focus()
+        end
+    end)
+end
+
+function Window:Focus()
+    if self.IsClosed then return end
+    self.MainFrame.ZIndex = 100
+    self.OnFocus:Fire()
+end
+
+function Window:Minimize()
+    if self.IsMinimized then
+        Tween.Create(self.MainFrame, "Normal", {Size = self.Size})
+        self.Content.Visible = true
+        if self.ResizeHandle then self.ResizeHandle.Visible = true end
+        self.IsMinimized = false
+    else
+        Tween.Create(self.MainFrame, "Normal", {Size = UDim2.new(0, self.Size.X.Offset, 0, 40)})
+        self.Content.Visible = false
+        if self.ResizeHandle then self.ResizeHandle.Visible = false end
+        self.IsMinimized = true
+    end
+    self.OnMinimize:Fire(self.IsMinimized)
+end
+
+function Window:Maximize()
+    if self.IsMaximized then
+        Tween.Create(self.MainFrame, "Smooth", {Size = self.Size, Position = self.Position})
+        self.IsMaximized = false
+    else
+        self.PreviousSize = self.MainFrame.Size
+        self.PreviousPosition = self.MainFrame.Position
+        Tween.Create(self.MainFrame, "Smooth", {
+            Size = UDim2.new(1, -40, 1, -40),
+            Position = UDim2.new(0, 20, 0, 20)
+        })
+        self.IsMaximized = true
+    end
+end
+
+function Window:Close()
+    if self.IsClosed then return end
+    self.IsClosed = true
+    Tween.FadeOut(self.MainFrame, nil, function()
+        self.MainFrame.Visible = false
+    end)
+    self.OnClose:Fire()
+end
+
+function Window:Open()
+    if not self.IsClosed then return end
+    self.IsClosed = false
+    self.MainFrame.Visible = true
+    self.MainFrame.BackgroundTransparency = 1
+    Tween.FadeIn(self.MainFrame)
+end
+
+function Window:SetTitle(title: string)
+    self.Title = title
+    self.TitleLabel.Text = title
+end
+
+function Window:SetAcrylicEnabled(enabled: boolean)
+    self.AcrylicEnabled = enabled
+end
+
+function Window:SetTheme(theme)
+    self.Theme = theme
+    self:ApplyTheme()
+end
+
+function Window:GetContent()
+    return self.Content
+end
+
+function Window:Destroy()
+    self.OnClose:Destroy()
+    self.OnMinimize:Destroy()
+    self.OnFocus:Destroy()
+    if self.MainFrame then self.MainFrame:Destroy() end
+end
+
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+-- BUTTON COMPONENT
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+local Button = {}
+Button.__index = Button
+
+Button.Variants = {
+    Default = "Default", Primary = "Primary", Secondary = "Secondary",
+    Success = "Success", Danger = "Danger", Warning = "Warning",
+    Ghost = "Ghost", Outline = "Outline", Link = "Link"
+}
+
+function Button.new(config: {[string]: any})
+    local self = setmetatable({}, Button)
+    
+    config = config or {}
+    self.Text = config.Text or "Button"
+    self.Variant = config.Variant or Button.Variants.Default
+    self.Width = config.Width
+    self.Icon = config.Icon
+    self.Disabled = config.Disabled or false
+    self.Loading = config.Loading or false
+    self.Theme = config.Theme or Theme.new("Dark")
+    self.Parent = config.Parent
+    self.Callback = config.Callback
+    
+    self.OnClick = Instance.new("BindableEvent")
+    self.OnHover = Instance.new("BindableEvent")
+    self.OnLeave = Instance.new("BindableEvent")
+    
+    self:CreateButton()
+    self:ApplyStyling()
+    self:SetupInteractions()
+    
+    return self
+end
+
+function Button:CreateButton()
+    self.MainFrame = Instance.new("TextButton")
+    self.MainFrame.Name = "Button"
+    self.MainFrame.Size = self.Width and UDim2.new(0, self.Width, 0, 36) or UDim2.new(0, 0, 0, 36)
+    self.MainFrame.AutomaticSize = self.Width and Enum.AutomaticSize.None or Enum.AutomaticSize.X
+    self.MainFrame.BackgroundTransparency = 0
+    self.MainFrame.Text = ""
+    self.MainFrame.AutoButtonColor = false
+    self.MainFrame.ClipsDescendants = true
+    self.MainFrame.Parent = self.Parent
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = self.MainFrame
+    
+    local layout = Instance.new("UIListLayout")
+    layout.FillDirection = Enum.FillDirection.Horizontal
+    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    layout.VerticalAlignment = Enum.VerticalAlignment.Center
+    layout.Padding = UDim.new(0, 6)
+    layout.Parent = self.MainFrame
+    
+    local padding = Instance.new("UIPadding")
+    padding.PaddingLeft = UDim.new(0, 16)
+    padding.PaddingRight = UDim.new(0, 16)
+    padding.Parent = self.MainFrame
+    
+    if self.Icon then
+        self.IconLabel = Instance.new("ImageLabel")
+        self.IconLabel.Name = "Icon"
+        self.IconLabel.Size = UDim2.new(0, 16, 0, 16)
+        self.IconLabel.BackgroundTransparency = 1
+        self.IconLabel.Image = self.Icon
+        self.IconLabel.Parent = self.MainFrame
+    end
+    
+    self.TextLabel = Instance.new("TextLabel")
+    self.TextLabel.Name = "Text"
+    self.TextLabel.AutomaticSize = Enum.AutomaticSize.XY
+    self.TextLabel.BackgroundTransparency = 1
+    self.TextLabel.Text = self.Text
+    self.TextLabel.TextSize = 14
+    self.TextLabel.Font = Enum.Font.GothamSemibold
+    self.TextLabel.TextXAlignment = Enum.TextXAlignment.Center
+    self.TextLabel.TextYAlignment = Enum.TextYAlignment.Center
+    self.TextLabel.Parent = self.MainFrame
+    
+    self.Spinner = Instance.new("Frame")
+    self.Spinner.Name = "Spinner"
+    self.Spinner.Size = UDim2.new(0, 16, 0, 16)
+    self.Spinner.BackgroundTransparency = 1
+    self.Spinner.Visible = false
+    self.Spinner.Parent = self.MainFrame
+end
+
+function Button:GetVariantColors()
+    local theme = self.Theme
+    local colors = {Background = theme:Get("Surface"), BackgroundHover = theme:Get("SurfaceHover"), Text = theme:Get("TextPrimary")}
+    
+    if self.Variant == Button.Variants.Primary then
+        colors = {Background = theme:Get("Primary"), BackgroundHover = theme:Get("PrimaryHover"), Text = Color3.fromRGB(255, 255, 255)}
+    elseif self.Variant == Button.Variants.Success then
+        colors = {Background = theme:Get("Success"), BackgroundHover = Theme.Lighten(theme:Get("Success"), 0.1), Text = Color3.fromRGB(255, 255, 255)}
+    elseif self.Variant == Button.Variants.Danger then
+        colors = {Background = theme:Get("Error"), BackgroundHover = Theme.Lighten(theme:Get("Error"), 0.1), Text = Color3.fromRGB(255, 255, 255)}
+    elseif self.Variant == Button.Variants.Warning then
+        colors = {Background = theme:Get("Warning"), BackgroundHover = Theme.Lighten(theme:Get("Warning"), 0.1), Text = Color3.fromRGB(0, 0, 0)}
+    elseif self.Variant == Button.Variants.Ghost then
+        colors = {Background = theme:Get("Background"), BackgroundHover = theme:Get("Surface"), Text = theme:Get("TextPrimary")}
+    elseif self.Variant == Button.Variants.Link then
+        colors = {Background = theme:Get("Background"), BackgroundHover = theme:Get("Background"), Text = theme:Get("Primary")}
+    end
+    
+    return colors
+end
+
+function Button:ApplyStyling()
+    local colors = self:GetVariantColors()
+    self.MainFrame.BackgroundColor3 = colors.Background
+    self.TextLabel.TextColor3 = colors.Text
+    if self.IconLabel then self.IconLabel.ImageColor3 = colors.Text end
+    
+    if self.Disabled then
+        self.MainFrame.BackgroundTransparency = 0.5
+        self.TextLabel.TextTransparency = 0.5
+        if self.IconLabel then self.IconLabel.ImageTransparency = 0.5 end
+    end
+end
+
+function Button:CreateRipple()
+    local ripple = Instance.new("Frame")
+    ripple.Name = "Ripple"
+    ripple.Size = UDim2.new(0, 0, 0, 0)
+    ripple.Position = UDim2.new(0.5, 0, 0.5, 0)
+    ripple.AnchorPoint = Vector2.new(0.5, 0.5)
+    ripple.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    ripple.BackgroundTransparency = 0.7
+    ripple.BorderSizePixel = 0
+    ripple.ZIndex = self.MainFrame.ZIndex + 1
+    ripple.Parent = self.MainFrame
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(1, 0)
+    corner.Parent = ripple
+    
+    local targetSize = math.max(self.MainFrame.AbsoluteSize.X, self.MainFrame.AbsoluteSize.Y) * 2
+    Tween.Create(ripple, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, targetSize, 0, targetSize),
+        BackgroundTransparency = 1
+    }, function() ripple:Destroy() end)
+end
+
+function Button:SetupInteractions()
+    local colors = self:GetVariantColors()
+    
+    self.MainFrame.MouseEnter:Connect(function()
+        if self.Disabled or self.Loading then return end
+        self.OnHover:Fire()
+        Tween.Create(self.MainFrame, "Fast", {BackgroundColor3 = colors.BackgroundHover})
+    end)
+    
+    self.MainFrame.MouseLeave:Connect(function()
+        if self.Disabled or self.Loading then return end
+        self.OnLeave:Fire()
+        Tween.Create(self.MainFrame, "Fast", {BackgroundColor3 = colors.Background})
+    end)
+    
+    self.MainFrame.MouseButton1Click:Connect(function()
+        if self.Disabled or self.Loading then return end
+        self.OnClick:Fire()
+        if self.Callback then self.Callback() end
+        self:CreateRipple()
+    end)
+end
+
+function Button:SetText(text: string)
+    self.Text = text
+    self.TextLabel.Text = text
+end
+
+function Button:SetDisabled(disabled: boolean)
+    self.Disabled = disabled
+    self.MainFrame.Active = not disabled
+    self:ApplyStyling()
+end
+
+function Button:SetLoading(loading: boolean)
+    self.Loading = loading
+    self.TextLabel.Visible = not loading
+    if self.IconLabel then self.IconLabel.Visible = not loading end
+    self.Spinner.Visible = loading
+    
+    if loading then
+        local rotation = 0
+        task.spawn(function()
+            while self.Loading and self.Spinner do
+                rotation = rotation + 20
+                if self.Spinner then self.Spinner.Rotation = rotation end
+                task.wait(0.03)
+            end
+        end)
+    end
+end
+
+function Button:SetVariant(variant: string)
+    self.Variant = variant
+    self:ApplyStyling()
+end
+
+function Button:Click()
+    if self.Disabled or self.Loading then return end
+    self.OnClick:Fire()
+    if self.Callback then self.Callback() end
+end
+
+function Button:Destroy()
+    self.OnClick:Destroy()
+    self.OnHover:Destroy()
+    self.OnLeave:Destroy()
+    if self.MainFrame then self.MainFrame:Destroy() end
+end
+
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+-- TOGGLE COMPONENT
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+local Toggle = {}
+Toggle.__index = Toggle
+
+function Toggle.new(config: {[string]: any})
+    local self = setmetatable({}, Toggle)
+    
+    config = config or {}
+    self.Text = config.Text or ""
+    self.Description = config.Description or ""
+    self.Default = config.Default or false
+    self.Disabled = config.Disabled or false
+    self.Theme = config.Theme or Theme.new("Dark")
+    self.Parent = config.Parent
+    self.Callback = config.Callback
+    
+    self.Value = self.Default
+    
+    self.OnChanged = Instance.new("BindableEvent")
+    self.OnEnabled = Instance.new("BindableEvent")
+    self.OnDisabled = Instance.new("BindableEvent")
+    
+    self:CreateToggle()
+    self:ApplyStyling()
+    self:SetupInteractions()
+    self:SetValue(self.Default, true)
+    
+    return self
+end
+
+function Toggle:CreateToggle()
+    self.MainFrame = Instance.new("Frame")
+    self.MainFrame.Name = "Toggle"
+    self.MainFrame.Size = UDim2.new(1, 0, 0, self.Text ~= "" and 60 or 30)
+    self.MainFrame.BackgroundTransparency = 1
+    self.MainFrame.Parent = self.Parent
+    
+    local layout = Instance.new("UIListLayout")
+    layout.FillDirection = Enum.FillDirection.Horizontal
+    layout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+    layout.VerticalAlignment = Enum.VerticalAlignment.Center
+    layout.Padding = UDim.new(0, 12)
+    layout.Parent = self.MainFrame
+    
+    self.SwitchContainer = Instance.new("TextButton")
+    self.SwitchContainer.Name = "Switch"
+    self.SwitchContainer.Size = UDim2.new(0, 44, 0, 24)
+    self.SwitchContainer.BackgroundTransparency = 1
+    self.SwitchContainer.Text = ""
+    self.SwitchContainer.AutoButtonColor = false
+    self.SwitchContainer.Parent = self.MainFrame
+    
+    self.SwitchBackground = Instance.new("Frame")
+    self.SwitchBackground.Name = "Background"
+    self.SwitchBackground.Size = UDim2.new(1, 0, 1, 0)
+    self.SwitchBackground.BorderSizePixel = 0
+    self.SwitchBackground.Parent = self.SwitchContainer
+    
+    local bgCorner = Instance.new("UICorner")
+    bgCorner.CornerRadius = UDim.new(1, 0)
+    bgCorner.Parent = self.SwitchBackground
+    
+    self.SwitchKnob = Instance.new("Frame")
+    self.SwitchKnob.Name = "Knob"
+    self.SwitchKnob.Size = UDim2.new(0, 20, 0, 20)
+    self.SwitchKnob.Position = UDim2.new(0, 2, 0.5, -10)
+    self.SwitchKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    self.SwitchKnob.BorderSizePixel = 0
+    self.SwitchKnob.Parent = self.SwitchBackground
+    
+    local knobCorner = Instance.new("UICorner")
+    knobCorner.CornerRadius = UDim.new(1, 0)
+    knobCorner.Parent = self.SwitchKnob
+    
+    if self.Text ~= "" then
+        self.TextContainer = Instance.new("Frame")
+        self.TextContainer.Name = "TextContainer"
+        self.TextContainer.Size = UDim2.new(1, -56, 1, 0)
+        self.TextContainer.BackgroundTransparency = 1
+        self.TextContainer.Parent = self.MainFrame
+        
+        self.TextLabel = Instance.new("TextLabel")
+        self.TextLabel.Name = "Text"
+        self.TextLabel.Size = UDim2.new(1, 0, self.Description ~= "" and 0.5 or 1, 0)
+        self.TextLabel.BackgroundTransparency = 1
+        self.TextLabel.Text = self.Text
+        self.TextLabel.TextSize = 14
+        self.TextLabel.Font = Enum.Font.Gotham
+        self.TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+        self.TextLabel.Parent = self.TextContainer
+        
+        if self.Description ~= "" then
+            self.DescriptionLabel = Instance.new("TextLabel")
+            self.DescriptionLabel.Name = "Description"
+            self.DescriptionLabel.Size = UDim2.new(1, 0, 0.5, 0)
+            self.DescriptionLabel.Position = UDim2.new(0, 0, 0.5, 0)
+            self.DescriptionLabel.BackgroundTransparency = 1
+            self.DescriptionLabel.Text = self.Description
+            self.DescriptionLabel.TextSize = 12
+            self.DescriptionLabel.Font = Enum.Font.Gotham
+            self.DescriptionLabel.TextXAlignment = Enum.TextXAlignment.Left
+            self.DescriptionLabel.Parent = self.TextContainer
+        end
+    end
+end
+
+function Toggle:ApplyStyling()
+    local theme = self.Theme
+    self.OffColor = theme:Get("Surface")
+    self.OnColor = theme:Get("Primary")
+    self.DisabledColor = theme:Get("BackgroundTertiary")
+    
+    if self.TextLabel then self.TextLabel.TextColor3 = theme:Get("TextPrimary") end
+    if self.DescriptionLabel then self.DescriptionLabel.TextColor3 = theme:Get("TextSecondary") end
+end
+
+function Toggle:SetupInteractions()
+    self.SwitchContainer.MouseButton1Click:Connect(function()
+        if self.Disabled then return end
+        self:Toggle()
+    end)
+end
+
+function Toggle:Toggle()
+    self:SetValue(not self.Value)
+end
+
+function Toggle:SetValue(value: boolean, instant: boolean?)
+    if self.Value == value then return end
+    self.Value = value
+    
+    local knobPosition = value and UDim2.new(1, -22, 0.5, -10) or UDim2.new(0, 2, 0.5, -10)
+    local bgColor = value and self.OnColor or self.OffColor
+    local duration = instant and 0 or 0.25
+    
+    Tween.Create(self.SwitchKnob, TweenInfo.new(duration, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = knobPosition})
+    Tween.Create(self.SwitchBackground, TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = bgColor})
+    
+    self.OnChanged:Fire(value)
+    if value then self.OnEnabled:Fire() else self.OnDisabled:Fire() end
+    if self.Callback then self.Callback(value) end
+end
+
+function Toggle:GetValue(): boolean
+    return self.Value
+end
+
+function Toggle:SetDisabled(disabled: boolean)
+    self.Disabled = disabled
+    self.SwitchContainer.Active = not disabled
+    self.SwitchBackground.BackgroundColor3 = disabled and self.DisabledColor or (self.Value and self.OnColor or self.OffColor)
+end
+
+function Toggle:Destroy()
+    self.OnChanged:Destroy()
+    self.OnEnabled:Destroy()
+    self.OnDisabled:Destroy()
+    if self.MainFrame then self.MainFrame:Destroy() end
+end
+
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+-- SLIDER COMPONENT
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+local Slider = {}
+Slider.__index = Slider
+
+function Slider.new(config: {[string]: any})
+    local self = setmetatable({}, Slider)
+    
+    config = config or {}
+    self.Text = config.Text or ""
+    self.Min = config.Min or 0
+    self.Max = config.Max or 100
+    self.Value = config.Default or self.Min
+    self.Step = config.Step or 1
+    self.Suffix = config.Suffix or ""
+    self.Prefix = config.Prefix or ""
+    self.ShowValue = config.ShowValue ~= false
+    self.Disabled = config.Disabled or false
+    self.Theme = config.Theme or Theme.new("Dark")
+    self.Parent = config.Parent
+    self.Callback = config.Callback
+    
+    self.Dragging = false
+    
+    self.OnChanged = Instance.new("BindableEvent")
+    self.OnDragStart = Instance.new("BindableEvent")
+    self.OnDragEnd = Instance.new("BindableEvent")
+    
+    self:CreateSlider()
+    self:ApplyStyling()
+    self:SetupInteractions()
+    self:SetValue(self.Value, true)
+    
+    return self
+end
+
+function Slider:CreateSlider()
+    self.MainFrame = Instance.new("Frame")
+    self.MainFrame.Name = "Slider"
+    self.MainFrame.Size = UDim2.new(1, 0, 0, self.Text ~= "" and 50 or 30)
+    self.MainFrame.BackgroundTransparency = 1
+    self.MainFrame.Parent = self.Parent
+    
+    if self.Text ~= "" then
+        self.Header = Instance.new("Frame")
+        self.Header.Name = "Header"
+        self.Header.Size = UDim2.new(1, 0, 0, 20)
+        self.Header.BackgroundTransparency = 1
+        self.Header.Parent = self.MainFrame
+        
+        self.TextLabel = Instance.new("TextLabel")
+        self.TextLabel.Name = "Text"
+        self.TextLabel.Size = UDim2.new(1, self.ShowValue and -50 or 0, 1, 0)
+        self.TextLabel.BackgroundTransparency = 1
+        self.TextLabel.Text = self.Text
+        self.TextLabel.TextSize = 14
+        self.TextLabel.Font = Enum.Font.Gotham
+        self.TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+        self.TextLabel.Parent = self.Header
+        
+        if self.ShowValue then
+            self.ValueLabel = Instance.new("TextLabel")
+            self.ValueLabel.Name = "Value"
+            self.ValueLabel.Size = UDim2.new(0, 50, 1, 0)
+            self.ValueLabel.Position = UDim2.new(1, -50, 0, 0)
+            self.ValueLabel.BackgroundTransparency = 1
+            self.ValueLabel.TextSize = 14
+            self.ValueLabel.Font = Enum.Font.GothamSemibold
+            self.ValueLabel.TextXAlignment = Enum.TextXAlignment.Right
+            self.ValueLabel.Parent = self.Header
+        end
+    end
+    
+    self.TrackContainer = Instance.new("Frame")
+    self.TrackContainer.Name = "TrackContainer"
+    self.TrackContainer.Size = UDim2.new(1, 0, 0, 20)
+    self.TrackContainer.Position = UDim2.new(0, 0, 0, self.Text ~= "" and 26 or 5)
+    self.TrackContainer.BackgroundTransparency = 1
+    self.TrackContainer.Parent = self.MainFrame
+    
+    self.Track = Instance.new("Frame")
+    self.Track.Name = "Track"
+    self.Track.Size = UDim2.new(1, 0, 0, 6)
+    self.Track.Position = UDim2.new(0, 0, 0.5, -3)
+    self.Track.BorderSizePixel = 0
+    self.Track.Parent = self.TrackContainer
+    
+    local trackCorner = Instance.new("UICorner")
+    trackCorner.CornerRadius = UDim.new(1, 0)
+    trackCorner.Parent = self.Track
+    
+    self.Fill = Instance.new("Frame")
+    self.Fill.Name = "Fill"
+    self.Fill.Size = UDim2.new(0, 0, 1, 0)
+    self.Fill.BorderSizePixel = 0
+    self.Fill.Parent = self.Track
+    
+    local fillCorner = Instance.new("UICorner")
+    fillCorner.CornerRadius = UDim.new(1, 0)
+    fillCorner.Parent = self.Fill
+    
+    self.Knob = Instance.new("TextButton")
+    self.Knob.Name = "Knob"
+    self.Knob.Size = UDim2.new(0, 16, 0, 16)
+    self.Knob.Position = UDim2.new(0, -8, 0.5, -8)
+    self.Knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    self.Knob.Text = ""
+    self.Knob.AutoButtonColor = false
+    self.Knob.Parent = self.Track
+    
+    local knobCorner = Instance.new("UICorner")
+    knobCorner.CornerRadius = UDim.new(1, 0)
+    knobCorner.Parent = self.Knob
+    
+    self.DragArea = Instance.new("TextButton")
+    self.DragArea.Name = "DragArea"
+    self.DragArea.Size = UDim2.new(1, 0, 1, 20)
+    self.DragArea.Position = UDim2.new(0, 0, 0, -10)
+    self.DragArea.BackgroundTransparency = 1
+    self.DragArea.Text = ""
+    self.DragArea.Parent = self.Track
+end
+
+function Slider:ApplyStyling()
+    local theme = self.Theme
+    self.Track.BackgroundColor3 = theme:Get("Surface")
+    self.Fill.BackgroundColor3 = theme:Get("Primary")
+    if self.TextLabel then self.TextLabel.TextColor3 = theme:Get("TextPrimary") end
+    if self.ValueLabel then self.ValueLabel.TextColor3 = theme:Get("TextPrimary") end
+end
+
+function Slider:SetupInteractions()
+    local function updateFromInput(input)
+        local trackAbsPos = self.Track.AbsolutePosition
+        local trackAbsSize = self.Track.AbsoluteSize
+        local mouseX = input.Position.X
+        local relativeX = mouseX - trackAbsPos.X
+        local percentage = math.clamp(relativeX / trackAbsSize.X, 0, 1)
+        local rawValue = self.Min + (self.Max - self.Min) * percentage
+        local steppedValue = math.floor(rawValue / self.Step + 0.5) * self.Step
+        steppedValue = math.clamp(steppedValue, self.Min, self.Max)
+        self:SetValue(steppedValue)
+    end
+    
+    self.DragArea.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if self.Disabled then return end
+            self.Dragging = true
+            self.OnDragStart:Fire()
+            updateFromInput(input)
+            Tween.Create(self.Knob, "Fast", {Size = UDim2.new(0, 20, 0, 20)})
+        end
+    end)
+    
+    self.Knob.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if self.Disabled then return end
+            self.Dragging = true
+            self.OnDragStart:Fire()
+            Tween.Create(self.Knob, "Fast", {Size = UDim2.new(0, 20, 0, 20)})
+        end
+    end)
+    
+    local inputChangedConnection = UserInputService.InputChanged:Connect(function(input)
+        if not self.Dragging then return end
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            updateFromInput(input)
+        end
+    end)
+    
+    local inputEndedConnection = UserInputService.InputEnded:Connect(function(input)
+        if not self.Dragging then return end
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            self.Dragging = false
+            self.OnDragEnd:Fire()
+            Tween.Create(self.Knob, "Fast", {Size = UDim2.new(0, 16, 0, 16)})
+        end
+    end)
+    
+    self.Connections = {inputChangedConnection, inputEndedConnection}
+end
+
+function Slider:SetValue(value: number, instant: boolean?)
+    value = math.clamp(value, self.Min, self.Max)
+    value = math.floor(value / self.Step + 0.5) * self.Step
+    if self.Value == value then return end
+    
+    self.Value = value
+    local percentage = (value - self.Min) / (self.Max - self.Min)
+    local duration = instant and 0 or 0.15
+    
+    Tween.Create(self.Fill, TweenInfo.new(duration), {Size = UDim2.new(percentage, 0, 1, 0)})
+    Tween.Create(self.Knob, TweenInfo.new(duration), {Position = UDim2.new(percentage, -8, 0.5, -8)})
+    
+    if self.ValueLabel then
+        self.ValueLabel.Text = self.Prefix .. tostring(value) .. self.Suffix
+    end
+    
+    self.OnChanged:Fire(value)
+    if self.Callback then self.Callback(value) end
+end
+
+function Slider:GetValue(): number
+    return self.Value
+end
+
+function Slider:SetDisabled(disabled: boolean)
+    self.Disabled = disabled
+end
+
+function Slider:Destroy()
+    if self.Connections then
+        for _, connection in ipairs(self.Connections) do
+            if connection then connection:Disconnect() end
+        end
+    end
+    self.OnChanged:Destroy()
+    self.OnDragStart:Destroy()
+    self.OnDragEnd:Destroy()
+    if self.MainFrame then self.MainFrame:Destroy() end
+end
+
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+-- DROPDOWN COMPONENT
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+local Dropdown = {}
+Dropdown.__index = Dropdown
+
+function Dropdown.new(config: {[string]: any})
+    local self = setmetatable({}, Dropdown)
+    
+    config = config or {}
+    self.Text = config.Text or ""
+    self.Placeholder = config.Placeholder or "Select..."
+    self.Options = config.Options or {}
+    self.Default = config.Default
+    self.MultiSelect = config.MultiSelect or false
+    self.Searchable = config.Searchable or false
+    self.MaxHeight = config.MaxHeight or 200
+    self.Disabled = config.Disabled or false
+    self.Theme = config.Theme or Theme.new("Dark")
+    self.Parent = config.Parent
+    self.Callback = config.Callback
+    
+    self.Open = false
+    self.Selected = self.MultiSelect and {} or nil
+    self.SearchText = ""
+    
+    self.OnChanged = Instance.new("BindableEvent")
+    self.OnOpen = Instance.new("BindableEvent")
+    self.OnClose = Instance.new("BindableEvent")
+    
+    self:CreateDropdown()
+    self:ApplyStyling()
+    self:SetupInteractions()
+    
+    if self.Default then
+        self:SetValue(self.Default, true)
+    end
+    
+    return self
+end
+
+function Dropdown:CreateDropdown()
+    self.MainFrame = Instance.new("Frame")
+    self.MainFrame.Name = "Dropdown"
+    self.MainFrame.Size = UDim2.new(1, 0, 0, self.Text ~= "" and 70 or 40)
+    self.MainFrame.BackgroundTransparency = 1
+    self.MainFrame.Parent = self.Parent
+    
+    if self.Text ~= "" then
+        self.TextLabel = Instance.new("TextLabel")
+        self.TextLabel.Name = "Text"
+        self.TextLabel.Size = UDim2.new(1, 0, 0, 20)
+        self.TextLabel.BackgroundTransparency = 1
+        self.TextLabel.Text = self.Text
+        self.TextLabel.TextSize = 14
+        self.TextLabel.Font = Enum.Font.Gotham
+        self.TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+        self.TextLabel.Parent = self.MainFrame
+    end
+    
+    self.DropdownButton = Instance.new("TextButton")
+    self.DropdownButton.Name = "Button"
+    self.DropdownButton.Size = UDim2.new(1, 0, 0, 36)
+    self.DropdownButton.Position = UDim2.new(0, 0, 0, self.Text ~= "" and 26 or 2)
+    self.DropdownButton.BackgroundColor3 = self.Theme:Get("Surface")
+    self.DropdownButton.Text = ""
+    self.DropdownButton.AutoButtonColor = false
+    self.DropdownButton.Parent = self.MainFrame
+    
+    local buttonCorner = Instance.new("UICorner")
+    buttonCorner.CornerRadius = UDim.new(0, 6)
+    buttonCorner.Parent = self.DropdownButton
+    
+    self.SelectedLabel = Instance.new("TextLabel")
+    self.SelectedLabel.Name = "Selected"
+    self.SelectedLabel.Size = UDim2.new(1, -50, 1, 0)
+    self.SelectedLabel.Position = UDim2.new(0, 12, 0, 0)
+    self.SelectedLabel.BackgroundTransparency = 1
+    self.SelectedLabel.Text = self.Placeholder
+    self.SelectedLabel.TextSize = 14
+    self.SelectedLabel.Font = Enum.Font.Gotham
+    self.SelectedLabel.TextXAlignment = Enum.TextXAlignment.Left
+    self.SelectedLabel.TextTruncate = Enum.TextTruncate.AtEnd
+    self.SelectedLabel.Parent = self.DropdownButton
+    
+    self.ArrowIcon = Instance.new("ImageLabel")
+    self.ArrowIcon.Name = "Arrow"
+    self.ArrowIcon.Size = UDim2.new(0, 16, 0, 16)
+    self.ArrowIcon.Position = UDim2.new(1, -28, 0.5, -8)
+    self.ArrowIcon.BackgroundTransparency = 1
+    self.ArrowIcon.Image = "rbxassetid://3926307971"
+    self.ArrowIcon.ImageRectOffset = Vector2.new(324, 524)
+    self.ArrowIcon.ImageRectSize = Vector2.new(36, 36)
+    self.ArrowIcon.Rotation = 0
+    self.ArrowIcon.Parent = self.DropdownButton
+end
+
+function Dropdown:CreateDropdownMenu()
+    if self.DropdownMenu then return end
+    
+    local absPos = self.DropdownButton.AbsolutePosition
+    local absSize = self.DropdownButton.AbsoluteSize
+    
+    self.DropdownMenu = Instance.new("Frame")
+    self.DropdownMenu.Name = "Menu"
+    self.DropdownMenu.Size = UDim2.new(0, absSize.X, 0, 0)
+    self.DropdownMenu.Position = UDim2.new(0, absPos.X, 0, absPos.Y + absSize.Y + 4)
+    self.DropdownMenu.BackgroundColor3 = self.Theme:Get("BackgroundSecondary")
+    self.DropdownMenu.BorderSizePixel = 0
+    self.DropdownMenu.ClipsDescendants = true
+    self.DropdownMenu.ZIndex = 1000
+    self.DropdownMenu.Visible = false
+    self.DropdownMenu.Parent = self.Parent.Parent
+    
+    local menuCorner = Instance.new("UICorner")
+    menuCorner.CornerRadius = UDim.new(0, 6)
+    menuCorner.Parent = self.DropdownMenu
+    
+    local shadow = Instance.new("ImageLabel")
+    shadow.Name = "Shadow"
+    shadow.Size = UDim2.new(1, 20, 1, 20)
+    shadow.Position = UDim2.new(0, -10, 0, -10)
+    shadow.BackgroundTransparency = 1
+    shadow.Image = "rbxassetid://5554236805"
+    shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+    shadow.ImageTransparency = 0.5
+    shadow.ScaleType = Enum.ScaleType.Slice
+    shadow.SliceCenter = Rect.new(23, 23, 277, 277)
+    shadow.ZIndex = 999
+    shadow.Parent = self.DropdownMenu
+    
+    self.OptionsContainer = Instance.new("ScrollingFrame")
+    self.OptionsContainer.Name = "Options"
+    self.OptionsContainer.Size = UDim2.new(1, 0, 1, 0)
+    self.OptionsContainer.BackgroundTransparency = 1
+    self.OptionsContainer.BorderSizePixel = 0
+    self.OptionsContainer.ScrollBarThickness = 4
+    self.OptionsContainer.ScrollBarImageColor3 = self.Theme:Get("Surface")
+    self.OptionsContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
+    self.OptionsContainer.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    self.OptionsContainer.Parent = self.DropdownMenu
+    
+    local layout = Instance.new("UIListLayout")
+    layout.Padding = UDim.new(0, 2)
+    layout.Parent = self.OptionsContainer
+    
+    local padding = Instance.new("UIPadding")
+    padding.PaddingTop = UDim.new(0, 4)
+    padding.PaddingBottom = UDim.new(0, 4)
+    padding.PaddingLeft = UDim.new(0, 4)
+    padding.PaddingRight = UDim.new(0, 4)
+    padding.Parent = self.OptionsContainer
+    
+    self:CreateOptionButtons()
+end
+
+function Dropdown:CreateOptionButtons()
+    self.OptionButtons = {}
+    if not self.OptionsContainer then return end
+    
+    for _, child in ipairs(self.OptionsContainer:GetChildren()) do
+        if child:IsA("TextButton") then child:Destroy() end
+    end
+    
+    for i, option in ipairs(self.Options) do
+        local optionText = typeof(option) == "table" and option.Text or tostring(option)
+        local optionValue = typeof(option) == "table" and option.Value or option
+        
+        local button = Instance.new("TextButton")
+        button.Name = "Option_" .. tostring(i)
+        button.Size = UDim2.new(1, 0, 0, 32)
+        button.BackgroundTransparency = 1
+        button.Text = ""
+        button.AutoButtonColor = false
+        button.Parent = self.OptionsContainer
+        
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Name = "Text"
+        textLabel.Size = UDim2.new(1, -16, 1, 0)
+        textLabel.Position = UDim2.new(0, 8, 0, 0)
+        textLabel.BackgroundTransparency = 1
+        textLabel.Text = optionText
+        textLabel.TextSize = 14
+        textLabel.Font = Enum.Font.Gotham
+        textLabel.TextXAlignment = Enum.TextXAlignment.Left
+        textLabel.TextColor3 = self.Theme:Get("TextPrimary")
+        textLabel.Parent = button
+        
+        button:SetAttribute("Value", optionValue)
+        button:SetAttribute("Text", optionText)
+        
+        button.MouseEnter:Connect(function()
+            if self.Disabled then return end
+            Tween.Create(button, "Fast", {BackgroundTransparency = 0.5})
+        end)
+        
+        button.MouseLeave:Connect(function()
+            if self.Disabled then return end
+            Tween.Create(button, "Fast", {BackgroundTransparency = 1})
+        end)
+        
+        button.MouseButton1Click:Connect(function()
+            if self.Disabled then return end
+            self:SelectOption(optionValue, optionText)
+        end)
+        
+        table.insert(self.OptionButtons, button)
+    end
+end
+
+function Dropdown:SelectOption(value, text)
+    if self.MultiSelect then
+        local index = table.find(self.Selected, value)
+        if index then
+            table.remove(self.Selected, index)
+        else
+            table.insert(self.Selected, value)
+        end
+        self:UpdateMultiSelectDisplay()
+    else
+        self.Selected = value
+        self.SelectedLabel.Text = text
+        self:Close()
+    end
+    
+    self.OnChanged:Fire(self.Selected)
+    if self.Callback then self.Callback(self.Selected) end
+end
+
+function Dropdown:UpdateMultiSelectDisplay()
+    if #self.Selected == 0 then
+        self.SelectedLabel.Text = self.Placeholder
+    elseif #self.Selected == 1 then
+        for _, btn in ipairs(self.OptionButtons) do
+            if btn:GetAttribute("Value") == self.Selected[1] then
+                self.SelectedLabel.Text = btn:GetAttribute("Text")
+                break
+            end
+        end
+    else
+        self.SelectedLabel.Text = tostring(#self.Selected) .. " items selected"
+    end
+end
+
+function Dropdown:ApplyStyling()
+    self.DropdownButton.BackgroundColor3 = self.Theme:Get("Surface")
+    self.SelectedLabel.TextColor3 = self.Theme:Get("TextPrimary")
+    self.ArrowIcon.ImageColor3 = self.Theme:Get("TextTertiary")
+    if self.TextLabel then self.TextLabel.TextColor3 = self.Theme:Get("TextPrimary") end
+end
+
+function Dropdown:SetupInteractions()
+    self.DropdownButton.MouseButton1Click:Connect(function()
+        if self.Disabled then return end
+        self:Toggle()
+    end)
+    
+    self.DropdownButton.MouseEnter:Connect(function()
+        if self.Disabled then return end
+        Tween.Create(self.DropdownButton, "Fast", {BackgroundColor3 = self.Theme:Get("SurfaceHover")})
+    end)
+    
+    self.DropdownButton.MouseLeave:Connect(function()
+        if self.Disabled then return end
+        Tween.Create(self.DropdownButton, "Fast", {BackgroundColor3 = self.Theme:Get("Surface")})
+    end)
+end
+
+function Dropdown:Toggle()
+    if self.Open then self:Close() else self:Open() end
+end
+
+function Dropdown:Open()
+    if self.Open then return end
+    self.Open = true
+    self.OnOpen:Fire()
+    
+    self:CreateDropdownMenu()
+    Tween.Create(self.ArrowIcon, "Normal", {Rotation = 180})
+    
+    self.DropdownMenu.Visible = true
+    self.DropdownMenu.BackgroundTransparency = 1
+    
+    local optionCount = math.min(#self.Options, 8)
+    local targetHeight = optionCount * 34 + 8
+    targetHeight = math.min(targetHeight, self.MaxHeight)
+    
+    Tween.Create(self.DropdownMenu, "Normal", {
+        Size = UDim2.new(0, self.DropdownMenu.Size.X.Offset, 0, targetHeight),
+        BackgroundTransparency = 0
+    })
+    
+    self.OutsideClickConnection = UserInputService.InputBegan:Connect(function(input)
+        if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+        local mousePos = UserInputService:GetMouseLocation()
+        local menuPos = self.DropdownMenu.AbsolutePosition
+        local menuSize = self.DropdownMenu.AbsoluteSize
+        local buttonPos = self.DropdownButton.AbsolutePosition
+        local buttonSize = self.DropdownButton.AbsoluteSize
+        
+        local inMenu = mousePos.X >= menuPos.X and mousePos.X <= menuPos.X + menuSize.X and
+                       mousePos.Y >= menuPos.Y and mousePos.Y <= menuPos.Y + menuSize.Y
+        local inButton = mousePos.X >= buttonPos.X and mousePos.X <= buttonPos.X + buttonSize.X and
+                         mousePos.Y >= buttonPos.Y and mousePos.Y <= buttonPos.Y + buttonSize.Y
+        
+        if not inMenu and not inButton then self:Close() end
+    end)
+end
+
+function Dropdown:Close()
+    if not self.Open then return end
+    self.Open = false
+    self.OnClose:Fire()
+    
+    Tween.Create(self.ArrowIcon, "Normal", {Rotation = 0})
+    
+    if self.DropdownMenu then
+        Tween.Create(self.DropdownMenu, "Fast", {
+            Size = UDim2.new(0, self.DropdownMenu.Size.X.Offset, 0, 0),
+            BackgroundTransparency = 1
+        }, function() self.DropdownMenu.Visible = false end)
+    end
+    
+    if self.OutsideClickConnection then
+        self.OutsideClickConnection:Disconnect()
+        self.OutsideClickConnection = nil
+    end
+end
+
+function Dropdown:SetValue(value, instant)
+    if self.MultiSelect then
+        self.Selected = typeof(value) == "table" and value or {value}
+        self:UpdateMultiSelectDisplay()
+    else
+        self.Selected = value
+        for _, btn in ipairs(self.OptionButtons) do
+            if btn:GetAttribute("Value") == value then
+                self.SelectedLabel.Text = btn:GetAttribute("Text")
+                break
+            end
+        end
+    end
+    
+    if not instant then
+        self.OnChanged:Fire(self.Selected)
+        if self.Callback then self.Callback(self.Selected) end
+    end
+end
+
+function Dropdown:GetValue()
+    return self.Selected
+end
+
+function Dropdown:SetOptions(options)
+    self.Options = options
+    if self.DropdownMenu then self:CreateOptionButtons() end
+end
+
+function Dropdown:SetDisabled(disabled)
+    self.Disabled = disabled
+end
+
+function Dropdown:Destroy()
+    self:Close()
+    self.OnChanged:Destroy()
+    self.OnOpen:Destroy()
+    self.OnClose:Destroy()
+    if self.DropdownMenu then self.DropdownMenu:Destroy() end
+    if self.MainFrame then self.MainFrame:Destroy() end
+end
+
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+-- INPUT FIELD COMPONENT
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+local InputField = {}
+InputField.__index = InputField
+
+function InputField.new(config: {[string]: any})
+    local self = setmetatable({}, InputField)
+    
+    config = config or {}
+    self.Text = config.Text or ""
+    self.Placeholder = config.Placeholder or "Enter text..."
+    self.Default = config.Default or ""
+    self.ClearOnFocus = config.ClearOnFocus or false
+    self.Numeric = config.Numeric or false
+    self.Password = config.Password or false
+    self.MaxLength = config.MaxLength
+    self.Disabled = config.Disabled or false
+    self.Multiline = config.Multiline or false
+    self.Height = config.Height or (self.Multiline and 80 or 36)
+    self.Theme = config.Theme or Theme.new("Dark")
+    self.Parent = config.Parent
+    self.Callback = config.Callback
+    
+    self.Focused = false
+    
+    self.OnFocus = Instance.new("BindableEvent")
+    self.OnFocusLost = Instance.new("BindableEvent")
+    self.OnChanged = Instance.new("BindableEvent")
+    self.OnSubmitted = Instance.new("BindableEvent")
+    
+    self:CreateInput()
+    self:ApplyStyling()
+    self:SetupInteractions()
+    
+    if self.Default ~= "" then self:SetText(self.Default) end
+    
+    return self
+end
+
+function InputField:CreateInput()
+    self.MainFrame = Instance.new("Frame")
+    self.MainFrame.Name = "InputField"
+    self.MainFrame.Size = UDim2.new(1, 0, 0, self.Text ~= "" and 70 or self.Height + 10)
+    self.MainFrame.BackgroundTransparency = 1
+    self.MainFrame.Parent = self.Parent
+    
+    if self.Text ~= "" then
+        self.TextLabel = Instance.new("TextLabel")
+        self.TextLabel.Name = "Text"
+        self.TextLabel.Size = UDim2.new(1, 0, 0, 20)
+        self.TextLabel.BackgroundTransparency = 1
+        self.TextLabel.Text = self.Text
+        self.TextLabel.TextSize = 14
+        self.TextLabel.Font = Enum.Font.Gotham
+        self.TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+        self.TextLabel.Parent = self.MainFrame
+    end
+    
+    self.InputContainer = Instance.new("Frame")
+    self.InputContainer.Name = "Container"
+    self.InputContainer.Size = UDim2.new(1, 0, 0, self.Height)
+    self.InputContainer.Position = UDim2.new(0, 0, 0, self.Text ~= "" and 26 or 4)
+    self.InputContainer.BorderSizePixel = 0
+    self.InputContainer.Parent = self.MainFrame
+    
+    local containerCorner = Instance.new("UICorner")
+    containerCorner.CornerRadius = UDim.new(0, 6)
+    containerCorner.Parent = self.InputContainer
+    
+    self.BorderStroke = Instance.new("UIStroke")
+    self.BorderStroke.Thickness = 1
+    self.BorderStroke.Parent = self.InputContainer
+    
+    self.TextBox = Instance.new("TextBox")
+    self.TextBox.Name = "Input"
+    self.TextBox.Size = UDim2.new(1, -24, 1, -12)
+    self.TextBox.Position = UDim2.new(0, 12, 0, 6)
+    self.TextBox.BackgroundTransparency = 1
+    self.TextBox.PlaceholderText = self.Placeholder
+    self.TextBox.Text = ""
+    self.TextBox.TextSize = 14
+    self.TextBox.Font = Enum.Font.Gotham
+    self.TextBox.TextXAlignment = Enum.TextXAlignment.Left
+    self.TextBox.TextYAlignment = self.Multiline and Enum.TextYAlignment.Top or Enum.TextYAlignment.Center
+    self.TextBox.ClearTextOnFocus = self.ClearOnFocus
+    self.TextBox.MultiLine = self.Multiline
+    self.TextBox.TextWrapped = self.Multiline
+    self.TextBox.Parent = self.InputContainer
+end
+
+function InputField:ApplyStyling()
+    local theme = self.Theme
+    self.InputContainer.BackgroundColor3 = theme:Get("Surface")
+    self.BorderStroke.Color = theme:Get("Border")
+    self.TextBox.TextColor3 = theme:Get("TextPrimary")
+    self.TextBox.PlaceholderColor3 = theme:Get("TextTertiary")
+    if self.TextLabel then self.TextLabel.TextColor3 = theme:Get("TextPrimary") end
+end
+
+function InputField:SetupInteractions()
+    self.TextBox.Focused:Connect(function()
+        if self.Disabled then self.TextBox:ReleaseFocus() return end
+        self.Focused = true
+        self.OnFocus:Fire()
+        Tween.Create(self.BorderStroke, "Fast", {Color = self.Theme:Get("Primary")})
+        Tween.Create(self.InputContainer, "Fast", {BackgroundColor3 = self.Theme:Get("BackgroundSecondary")})
+    end)
+    
+    self.TextBox.FocusLost:Connect(function(enterPressed)
+        self.Focused = false
+        self.OnFocusLost:Fire()
+        Tween.Create(self.BorderStroke, "Fast", {Color = self.Theme:Get("Border")})
+        Tween.Create(self.InputContainer, "Fast", {BackgroundColor3 = self.Theme:Get("Surface")})
+        if enterPressed and not self.Multiline then
+            self.OnSubmitted:Fire(self.TextBox.Text)
+        end
+    end)
+    
+    self.TextBox:GetPropertyChangedSignal("Text"):Connect(function()
+        local text = self.TextBox.Text
+        
+        if self.Numeric and text ~= "" then
+            local num = tonumber(text)
+            if not num then
+                text = text:gsub("[^0-9.-]", "")
+                self.TextBox.Text = text
+                return
+            end
+        end
+        
+        if self.MaxLength and #text > self.MaxLength then
+            self.TextBox.Text = text:sub(1, self.MaxLength)
+            return
+        end
+        
+        self.OnChanged:Fire(text)
+        if self.Callback then self.Callback(text) end
+    end)
+    
+    self.InputContainer.MouseEnter:Connect(function()
+        if self.Disabled or self.Focused then return end
+        Tween.Create(self.BorderStroke, "Fast", {Color = self.Theme:Get("BorderHover")})
+    end)
+    
+    self.InputContainer.MouseLeave:Connect(function()
+        if self.Disabled or self.Focused then return end
+        Tween.Create(self.BorderStroke, "Fast", {Color = self.Theme:Get("Border")})
+    end)
+end
+
+function InputField:SetText(text: string)
+    self.TextBox.Text = text
+end
+
+function InputField:GetText(): string
+    return self.TextBox.Text
+end
+
+function InputField:Focus()
+    self.TextBox:CaptureFocus()
+end
+
+function InputField:SetDisabled(disabled: boolean)
+    self.Disabled = disabled
+    self.TextBox.Interactable = not disabled
+end
+
+function InputField:Destroy()
+    self.OnFocus:Destroy()
+    self.OnFocusLost:Destroy()
+    self.OnChanged:Destroy()
+    self.OnSubmitted:Destroy()
+    if self.MainFrame then self.MainFrame:Destroy() end
+end
+
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+-- NOTIFICATION COMPONENT
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+local Notification = {}
+Notification.__index = Notification
+
+Notification.Types = {Default = "Default", Success = "Success", Warning = "Warning", Error = "Error", Info = "Info"}
+
+function Notification.new(config: {[string]: any})
+    local self = setmetatable({}, Notification)
+    
+    config = config or {}
+    self.Title = config.Title or "Notification"
+    self.Content = config.Content or ""
+    self.Type = config.Type or Notification.Types.Default
+    self.Duration = config.Duration or 5
+    self.Theme = config.Theme or Theme.new("Dark")
+    self.Parent = config.Parent
+    
+    self.Dismissed = false
+    self.Paused = false
+    self.TimeRemaining = self.Duration
+    
+    self.OnClose = Instance.new("BindableEvent")
+    self.OnClick = Instance.new("BindableEvent")
+    
+    self:CreateNotification()
+    self:ApplyStyling()
+    self:SetupInteractions()
+    
+    if self.Duration > 0 then self:StartAutoDismiss() end
+    self:AnimateIn()
+    
+    return self
+end
+
+function Notification:CreateNotification()
+    self.MainFrame = Instance.new("Frame")
+    self.MainFrame.Name = "Notification"
+    self.MainFrame.Size = UDim2.new(1, 0, 0, self.Content ~= "" and 70 or 50)
+    self.MainFrame.BackgroundTransparency = 1
+    self.MainFrame.ClipsDescendants = true
+    self.MainFrame.Parent = self.Parent
+    
+    self.ContentFrame = Instance.new("Frame")
+    self.ContentFrame.Name = "Content"
+    self.ContentFrame.Size = UDim2.new(1, 0, 1, -8)
+    self.ContentFrame.BackgroundColor3 = self.Theme:Get("BackgroundSecondary")
+    self.ContentFrame.BorderSizePixel = 0
+    self.ContentFrame.Parent = self.MainFrame
+    
+    local contentCorner = Instance.new("UICorner")
+    contentCorner.CornerRadius = UDim.new(0, 8)
+    contentCorner.Parent = self.ContentFrame
+    
+    local shadow = Instance.new("ImageLabel")
+    shadow.Name = "Shadow"
+    shadow.Size = UDim2.new(1, 20, 1, 20)
+    shadow.Position = UDim2.new(0, -10, 0, -10)
+    shadow.BackgroundTransparency = 1
+    shadow.Image = "rbxassetid://5554236805"
+    shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+    shadow.ImageTransparency = 0.7
+    shadow.ScaleType = Enum.ScaleType.Slice
+    shadow.SliceCenter = Rect.new(23, 23, 277, 277)
+    shadow.ZIndex = -1
+    shadow.Parent = self.ContentFrame
+    
+    self.TitleLabel = Instance.new("TextLabel")
+    self.TitleLabel.Name = "Title"
+    self.TitleLabel.Size = UDim2.new(1, -50, self.Content ~= "" and 0.5 or 1, 0)
+    self.TitleLabel.Position = UDim2.new(0, 12, 0, 0)
+    self.TitleLabel.BackgroundTransparency = 1
+    self.TitleLabel.Text = self.Title
+    self.TitleLabel.TextSize = 14
+    self.TitleLabel.Font = Enum.Font.GothamSemibold
+    self.TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    self.TitleLabel.TextYAlignment = self.Content ~= "" and Enum.TextYAlignment.Bottom or Enum.TextYAlignment.Center
+    self.TitleLabel.Parent = self.ContentFrame
+    
+    if self.Content ~= "" then
+        self.ContentLabel = Instance.new("TextLabel")
+        self.ContentLabel.Name = "Content"
+        self.ContentLabel.Size = UDim2.new(1, -50, 0.5, 0)
+        self.ContentLabel.Position = UDim2.new(0, 12, 0.5, 0)
+        self.ContentLabel.BackgroundTransparency = 1
+        self.ContentLabel.Text = self.Content
+        self.ContentLabel.TextSize = 12
+        self.ContentLabel.Font = Enum.Font.Gotham
+        self.ContentLabel.TextXAlignment = Enum.TextXAlignment.Left
+        self.ContentLabel.TextYAlignment = Enum.TextYAlignment.Top
+        self.ContentLabel.TextWrapped = true
+        self.ContentLabel.Parent = self.ContentFrame
+    end
+    
+    self.CloseButton = Instance.new("TextButton")
+    self.CloseButton.Name = "Close"
+    self.CloseButton.Size = UDim2.new(0, 24, 0, 24)
+    self.CloseButton.Position = UDim2.new(1, -32, 0.5, -12)
+    self.CloseButton.BackgroundTransparency = 1
+    self.CloseButton.Text = ""
+    self.CloseButton.Parent = self.ContentFrame
+    
+    local closeIcon = Instance.new("ImageLabel")
+    closeIcon.Name = "Icon"
+    closeIcon.Size = UDim2.new(0, 14, 0, 14)
+    closeIcon.Position = UDim2.new(0.5, -7, 0.5, -7)
+    closeIcon.BackgroundTransparency = 1
+    closeIcon.Image = "rbxassetid://3926307971"
+    closeIcon.ImageRectOffset = Vector2.new(924, 724)
+    closeIcon.ImageRectSize = Vector2.new(36, 36)
+    closeIcon.ImageColor3 = self.Theme:Get("TextTertiary")
+    closeIcon.Parent = self.CloseButton
+    
+    if self.Duration > 0 then
+        self.ProgressBar = Instance.new("Frame")
+        self.ProgressBar.Name = "Progress"
+        self.ProgressBar.Size = UDim2.new(1, 0, 0, 3)
+        self.ProgressBar.Position = UDim2.new(0, 0, 1, -3)
+        self.ProgressBar.BorderSizePixel = 0
+        self.ProgressBar.Parent = self.ContentFrame
+    end
+end
+
+function Notification:ApplyStyling()
+    local theme = self.Theme
+    local iconColor = theme:Get("TextPrimary")
+    
+    if self.Type == Notification.Types.Success then
+        iconColor = theme:Get("Success")
+        if self.ProgressBar then self.ProgressBar.BackgroundColor3 = theme:Get("Success") end
+    elseif self.Type == Notification.Types.Warning then
+        iconColor = theme:Get("Warning")
+        if self.ProgressBar then self.ProgressBar.BackgroundColor3 = theme:Get("Warning") end
+    elseif self.Type == Notification.Types.Error then
+        iconColor = theme:Get("Error")
+        if self.ProgressBar then self.ProgressBar.BackgroundColor3 = theme:Get("Error") end
+    elseif self.Type == Notification.Types.Info then
+        iconColor = theme:Get("Info")
+        if self.ProgressBar then self.ProgressBar.BackgroundColor3 = theme:Get("Info") end
+    else
+        if self.ProgressBar then self.ProgressBar.BackgroundColor3 = theme:Get("Primary") end
+    end
+    
+    self.ContentFrame.BackgroundColor3 = theme:Get("BackgroundSecondary")
+    self.TitleLabel.TextColor3 = theme:Get("TextPrimary")
+    if self.ContentLabel then self.ContentLabel.TextColor3 = theme:Get("TextSecondary") end
+end
+
+function Notification:SetupInteractions()
+    self.CloseButton.MouseButton1Click:Connect(function() self:Dismiss() end)
+    
+    self.ContentFrame.MouseEnter:Connect(function()
+        self.Paused = true
+        Tween.Create(self.ContentFrame, "Fast", {BackgroundColor3 = self.Theme:Get("Surface")})
+    end)
+    
+    self.ContentFrame.MouseLeave:Connect(function()
+        self.Paused = false
+        Tween.Create(self.ContentFrame, "Fast", {BackgroundColor3 = self.Theme:Get("BackgroundSecondary")})
+    end)
+    
+    self.ContentFrame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            self.OnClick:Fire()
+        end
+    end)
+end
+
+function Notification:AnimateIn()
+    self.ContentFrame.Position = UDim2.new(1, 20, 0, 0)
+    Tween.Create(self.ContentFrame, "SlideIn", {Position = UDim2.new(0, 0, 0, 0)})
+end
+
+function Notification:AnimateOut(callback)
+    Tween.Create(self.ContentFrame, "SlideOut", {Position = UDim2.new(1, 20, 0, 0)}, callback)
+end
+
+function Notification:StartAutoDismiss()
+    local startTime = tick()
+    
+    task.spawn(function()
+        while self.TimeRemaining > 0 and not self.Dismissed do
+            if not self.Paused then
+                local elapsed = tick() - startTime
+                self.TimeRemaining = math.max(0, self.Duration - elapsed)
+                if self.ProgressBar then
+                    self.ProgressBar.Size = UDim2.new(self.TimeRemaining / self.Duration, 0, 0, 3)
+                end
+            else
+                startTime = tick() - (self.Duration - self.TimeRemaining)
+            end
+            task.wait(0.05)
+        end
+        if not self.Dismissed then self:Dismiss() end
+    end)
+end
+
+function Notification:Dismiss()
+    if self.Dismissed then return end
+    self.Dismissed = true
+    self:AnimateOut(function()
+        self.OnClose:Fire()
+        self:Destroy()
+    end)
+end
+
+function Notification:Destroy()
+    self.OnClose:Destroy()
+    self.OnClick:Destroy()
+    if self.MainFrame then self.MainFrame:Destroy() end
+end
+
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+-- MAIN AURORAUI CLASS
+--═══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+AuroraUI.Config = {
+    Name = "AuroraUI",
+    Version = "1.0.0",
+    DefaultTheme = "Dark",
+    AnimationSpeed = 0.3,
+    UseAcrylic = true,
+}
+
+function AuroraUI.new(config: {[string]: any}?)
+    local self = setmetatable({}, AuroraUI)
+    
+    config = config or {}
+    for key, value in pairs(config) do
+        AuroraUI.Config[key] = value
+    end
+    
+    self.Theme = Theme.new(AuroraUI.Config.DefaultTheme)
+    self.ActiveWindows = {}
+    self.ActiveNotifications = {}
+    
+    self.ScreenGui = Instance.new("ScreenGui")
+    self.ScreenGui.Name = AuroraUI.Config.Name
+    self.ScreenGui.ResetOnSpawn = false
+    self.ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    self.ScreenGui.DisplayOrder = 999
+    
+    pcall(function() self.ScreenGui.Parent = CoreGui end)
+    if not self.ScreenGui.Parent then self.ScreenGui.Parent = PlayerGui end
+    
+    self.Container = Instance.new("Frame")
+    self.Container.Name = "Container"
+    self.Container.Size = UDim2.new(1, 0, 1, 0)
+    self.Container.BackgroundTransparency = 1
+    self.Container.Parent = self.ScreenGui
+    
+    self.NotificationContainer = Instance.new("Frame")
+    self.NotificationContainer.Name = "Notifications"
+    self.NotificationContainer.Size = UDim2.new(0, 320, 1, -20)
+    self.NotificationContainer.Position = UDim2.new(1, -340, 0, 10)
+    self.NotificationContainer.BackgroundTransparency = 1
+    self.NotificationContainer.Parent = self.ScreenGui
+    
+    return self
+end
+
+function AuroraUI:CreateWindow(config: {[string]: any})
+    config = config or {}
+    config.Theme = config.Theme or self.Theme
+    config.Parent = self.Container
+    
+    local window = Window.new(config)
+    table.insert(self.ActiveWindows, window)
+    return window
+end
+
+function AuroraUI:CreateButton(config: {[string]: any})
+    config = config or {}
+    config.Theme = config.Theme or self.Theme
+    return Button.new(config)
+end
+
+function AuroraUI:CreateToggle(config: {[string]: any})
+    config = config or {}
+    config.Theme = config.Theme or self.Theme
+    return Toggle.new(config)
+end
+
+function AuroraUI:CreateSlider(config: {[string]: any})
+    config = config or {}
+    config.Theme = config.Theme or self.Theme
+    return Slider.new(config)
+end
+
+function AuroraUI:CreateDropdown(config: {[string]: any})
+    config = config or {}
+    config.Theme = config.Theme or self.Theme
+    return Dropdown.new(config)
+end
+
+function AuroraUI:CreateInput(config: {[string]: any})
+    config = config or {}
+    config.Theme = config.Theme or self.Theme
+    return InputField.new(config)
+end
+
+function AuroraUI:Notify(config: {[string]: any})
+    config = config or {}
+    config.Theme = config.Theme or self.Theme
+    config.Parent = self.NotificationContainer
+    
+    local notification = Notification.new(config)
+    table.insert(self.ActiveNotifications, notification)
+    
+    notification.OnClose:Connect(function()
+        for i, notif in ipairs(self.ActiveNotifications) do
+            if notif == notification then
+                table.remove(self.ActiveNotifications, i)
+                break
+            end
+        end
+    end)
+    
+    return notification
+end
+
+function AuroraUI:SetTheme(themeName: string)
+    if type(themeName) == "string" then
+        self.Theme = Theme.new(themeName)
+    end
+    
+    for _, window in ipairs(self.ActiveWindows) do
+        window:SetTheme(self.Theme)
+    end
+end
+
+function AuroraUI:GetTheme()
+    return self.Theme
+end
+
+function AuroraUI:GetVersion(): string
+    return AuroraUI.Config.Version
+end
+
+function AuroraUI:Destroy()
+    for _, window in ipairs(self.ActiveWindows) do
+        window:Destroy()
+    end
+    for _, notification in ipairs(self.ActiveNotifications) do
+        notification:Destroy()
+    end
+    if self.ScreenGui then self.ScreenGui:Destroy() end
+    self.ActiveWindows = {}
+    self.ActiveNotifications = {}
+end
+
+return AuroraUI
